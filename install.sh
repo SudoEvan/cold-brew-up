@@ -210,8 +210,7 @@ cd "$REPO_DIR"
 
 if [[ ! -f .env ]]; then
   cp .env.example .env
-  warn "Created .env from .env.example. Fill in GITEA_TOKEN and re-run:"
-  warn "  cd $REPO_DIR && make credentials && make upstreams"
+  info "Created .env from .env.example (GITEA_TOKEN stays empty: Gitea uses SSH)"
 fi
 
 if [[ $RUN_BOOTSTRAP -eq 0 ]]; then
@@ -220,6 +219,19 @@ if [[ $RUN_BOOTSTRAP -eq 0 ]]; then
 fi
 
 ./bootstrap.sh
+
+step "Authenticating the non-GitHub remotes"
+
+# Delegated to the repo's own script rather than reimplemented here, so the
+# glab and Gitea logic lives in exactly one place. It has to run after
+# bootstrap.sh, which installs the ~/.ssh/config aliases it probes.
+if [[ -x scripts/git/setup-remote-auth.sh ]]; then
+  if ! ./scripts/git/setup-remote-auth.sh; then
+    warn "Some remotes still need attention. Re-run later with: cd $REPO_DIR && make auth"
+  fi
+else
+  warn "scripts/git/setup-remote-auth.sh not found; run 'make auth' manually"
+fi
 
 step "Done"
 info "cold-brew is at $REPO_DIR"
