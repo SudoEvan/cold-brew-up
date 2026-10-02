@@ -233,6 +233,35 @@ else
   warn "scripts/git/setup-remote-auth.sh not found; run 'make auth' manually"
 fi
 
+step "Checking the result"
+
+# Run the diagnosis here rather than only suggesting it: the whole point of
+# this script is that the machine ends up in a known state, and that claim
+# should be demonstrated, not left as an exercise. A failing check must not
+# fail the install, though, since everything above already succeeded.
+doctor_rc=0
+./scripts/doctor.sh || doctor_rc=$?
+
 step "Done"
-info "cold-brew is at $REPO_DIR"
-info "Check the machine any time with: cd $REPO_DIR && make doctor"
+
+cat <<EOF
+
+  cold-brew is installed at $REPO_DIR
+
+  Next:
+    1. Open a NEW terminal. The shell config in ~/.zshrc.d only applies to
+       shells started after this run.
+    2. Re-check the machine any time:
+         cd $REPO_DIR && make doctor
+    3. See everything available:
+         cd $REPO_DIR && make help
+
+  Before ever wiping or rebuilding this machine:
+    cd $REPO_DIR && make check-unsaved
+
+EOF
+
+if [[ $doctor_rc -ne 0 ]]; then
+  warn "doctor reported failures above. The install finished, but fix those before relying on it."
+  warn "Most are resolved by: cd $REPO_DIR && make auth"
+fi
