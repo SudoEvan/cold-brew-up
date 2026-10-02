@@ -11,7 +11,7 @@ to a machine that has no credentials yet, because cold-brew itself is private.
 ## Install
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/SudoEvan/cold-brew-up/v1.0.0/install.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/SudoEvan/cold-brew-up/v1.1.0/install.sh)"
 ```
 
 Use that form, not `curl … | bash`. Piping leaves stdin attached to the script,
@@ -24,8 +24,8 @@ means whoever compromises this repo owns every machine set up afterwards.
 ## Verify first
 
 ```bash
-curl -fsSL -O https://raw.githubusercontent.com/SudoEvan/cold-brew-up/v1.0.0/install.sh
-curl -fsSL https://raw.githubusercontent.com/SudoEvan/cold-brew-up/v1.0.0/install.sh.sha256
+curl -fsSL -O https://raw.githubusercontent.com/SudoEvan/cold-brew-up/v1.1.0/install.sh
+curl -fsSL https://raw.githubusercontent.com/SudoEvan/cold-brew-up/v1.1.0/install.sh.sha256
 shasum -a 256 install.sh    # compare with the .sha256, then run it
 bash install.sh
 ```
